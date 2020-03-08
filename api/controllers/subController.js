@@ -2,6 +2,10 @@ const fs = require("fs");
 const request = require('request');
 const util = require('util');
 const sub_json = "data/subscription.json";
+const logger = require("../../utils/logger");
+
+// logger.error('warp nacelles offline');
+// logger.info('shields at 99%');
 
 function read(dir){
     return new Promise(((resolve, reject) => {
@@ -49,11 +53,12 @@ function get_url_content(url){
 exports.get_all_subs_link = async function (req, res) {
     // console.log("获取全部的订阅链接和订阅名称");
     // console.log(req.ip, req.method, req.url, req.originalUrl, req.headers["user-agent"]);
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     let result = await read("data/subscription.json");
     result = JSON.parse(result);
     let send_text = "";
     for (let [key, value] of Object.entries(result)) {
-        send_text += util.format("名称 %s: \t订阅链接 %s \n", key, value);
+        send_text += util.format("名称 %s: &nbsp订阅链接 %s <br>", key, value);
     }
     res.status(200).send(send_text);
 };
@@ -61,6 +66,7 @@ exports.get_all_subs_link = async function (req, res) {
 // 根据订阅名称获得订阅链接
 exports.get_sub_link_by_name = async function (req, res){
     // console.log("根据订阅名称获得订阅链接");
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     let result = JSON.parse(await read(sub_json));
     let subid = req.params.subid.toUpperCase();
     if(result.hasOwnProperty(subid)){
@@ -84,6 +90,7 @@ exports.modify_sub_link_by_name = async function (req, res) {
     let subid = req.params.subid.toUpperCase();
     // console.log("根据订阅名称修改订阅链接");
     // console.log("要修改的订阅名称 %s，要修改的订阅链接: %s", subid, req.body.url);
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     let result = JSON.parse(await read(sub_json));
 
     if(result.hasOwnProperty(subid)){
@@ -97,6 +104,7 @@ exports.modify_sub_link_by_name = async function (req, res) {
 
 // 根据订阅名称删除订阅链接
 exports.delete_sub_link_by_name = async function (req, res) {
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     let subid = req.params.subid.toUpperCase();
     // console.log("根据订阅名称删除订阅链接");
     // console.log("要删除的订阅名称 %s", subid);
@@ -118,6 +126,10 @@ exports.add_sub_link = async function (req, res) {
         name: sub_name
         url: sub_url
      */
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
+    if (!req.body.hasOwnProperty("name") && !req.body.hasOwnProperty("url")){
+        res.status(404).send("请检查post参数正确与否")
+    }
     let sub_name = req.body["name"].toUpperCase();
     let sub_url = req.body["url"];
     // console.log("添加新的订阅链接");
@@ -130,6 +142,7 @@ exports.add_sub_link = async function (req, res) {
 
 // 根据订阅名称获取订阅内容
 exports.get_sub_content_by_name = async function (req, res) {
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     let subid = req.params.subid.toUpperCase();
     // console.log("根据订阅名称获取订阅内容");
     let result = JSON.parse(await read(sub_json));
@@ -144,6 +157,7 @@ exports.get_sub_content_by_name = async function (req, res) {
 
 // 获取全部订阅内容
 exports.get_all_sub_contents = function (req, res) {
+    logger.info(req.ip, req.method, req.url, req.headers["user-agent"]);
     res.sendStatus(403);
 };
 

@@ -9,8 +9,9 @@
 
 
 ## 使用
+推荐方法：部署到Google app engine平台
 
-框架大致为 express + forever + nginx
+备用方法：部署到自己的vps主机，框架大致为 express + forever + nginx
 
 注意最好使用ssl安全连接
 
