@@ -16,6 +16,7 @@ morgan.format('combined', ':remote-addr - :remote-user [:localDate] ":method :ur
 
 app.use(morgan('combined', {stream: accessLogStream}));
 
+app.set('trust proxy', true);  // 在nginx config里面添加 proxy_set_header X-Forwarded-For $remote_addr
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 routes(app);
